@@ -1,4 +1,4 @@
-const Dish = require("../models/dish");
+const Dish = require("../models/Dish");
 const {cloudinary} = require("../utils/cloudinary")
 
 exports.getDishes = async (req, res, next)=>{
