@@ -6,6 +6,9 @@
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/ww"
   },
+  "engines": {
+    "node": "14.16.0"
+  },
   "dependencies": {
     "cloudinary": "^1.25.1",
     "cookie-parser": "~1.4.4",
