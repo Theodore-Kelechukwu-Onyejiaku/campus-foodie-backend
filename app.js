@@ -3,16 +3,18 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var cors = require('cors')
+var cors = require('cors');
+require('dotenv').config()
+
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var userRouter = require('./routes/user');
 var adminRouter = require("./routes/admin");
 var orderRouter = require("./routes/order");
 var dishRouter = require("./routes/dish");
+var authRouter = require("./routes/auth");
 
 var app = express();
-require('dotenv').config()
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,7 +28,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', indexRouter);
-app.use('/api/users', usersRouter);
+app.use("/api/auth", authRouter);
+app.use('/api/user', userRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/dish", dishRouter);
