@@ -12,7 +12,8 @@ const userSchema = new Schema({
     provider: {type: String},
     email: {type: String},
     picture: {type: String},
-    googleId: {type: String, select: false}
+    googleId: {type: String, select: false},
+    verificationSign: {type:String},
 })
 
 module.exports = mongoose.model("User", userSchema);

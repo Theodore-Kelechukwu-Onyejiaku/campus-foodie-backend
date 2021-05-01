@@ -11,6 +11,7 @@
     "node": "14.16.0"
   },
   "dependencies": {
+    "@sendgrid/mail": "^7.4.2",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.25.1",
     "cookie-parser": "~1.4.4",
