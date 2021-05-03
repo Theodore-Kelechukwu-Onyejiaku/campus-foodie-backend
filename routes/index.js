@@ -6,6 +6,10 @@ router.get('/', function(req, res, next) {
   res.status(200).json({message: "Welcome to campus foodie"});
 });
 
+router.get("/index", (req, res, next)=>{
+  res.render("index")
+})
+
 router.get("/hello", function(req, res, next){
   res.end("hello")
 })

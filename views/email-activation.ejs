@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Campus-foodie(email activation)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Tangerine:wght@700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+      <% var message; var error%>
+    <h1 style="font-family: Tangerine;text-align: center;">Welcome to Campus-foodie</h1>
+    <div>
+        <% if(message){ %>
+            <h4 style="font-family: 'Tangerine, cursive';text-align: center;color:darkgreen">Success</h4>
+            <div style="width:50%;margin:auto;">
+                <img style="display:block; width:100%;margin:auto;" src="/images/success gif.gif" alt="success gif"/>
+            </div>
+            <p style="font-family: 'Tangerine, cursive';text-align: center;color:darkgreen">
+                <%= message %>
+                <br/>
+                Visit home page to login
+            </p>
+        <% } %>
+        <% if(error){ %>
+            <h4 style="font-family: 'Tangerine, cursive';text-align: center;color:darkred">Error</h4>
+            <div style="width:50%;margin:auto;">
+                <img style="display:block; width:100%;margin:auto;" src="/images/error.gif" alt="success gif"/>
+            </div>
+            <p style="font-family: 'Tangerine, cursive';text-align: center;color:darkred">
+                <%= error %>
+                <br/>
+            </p>
+        <% } %>
+    </div>
+  </body>
+</html>

@@ -214,7 +214,6 @@ exports.localLogin = async (req, res, next) =>{
   
 }
 
-
 // ACTIVATE USER ACCOUNT
 exports.activateAccount =async (req, res, next) =>{
   console.log(req.get("host"));
@@ -223,15 +222,15 @@ exports.activateAccount =async (req, res, next) =>{
   const user = await User.findById(req.params.userId).exec();
 
   if(!user){
-    return res.status(400).json({message:"Account does not exist!"})
+    return res.render("email-activation",{error:"Account does not exist!"})
   }
   if(user.isActivated){
-    return res.status(400).json({message:"This account is already activated!"})
+    return res.render("email-activation", {message: "This account is already activated!"})
   }
 
   if(user.verificationSign === req.params.userSignature){
     user.isActivated = true;
     await user.save();
   }
-  res.end("Email account activation!")
+  return res.render("email-activation", {message: "Account activation successful!"})
 }
