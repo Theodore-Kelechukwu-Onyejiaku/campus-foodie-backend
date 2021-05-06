@@ -14,8 +14,9 @@ sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 
 // VERIFY IF USER IS LOGGED IN
 exports.verifyLogin = async (req, res, next)=>{
+  console.log(req.userId)
     try {
-      let user = await User.findById(req.user._id, "email username").exec()
+      let user = await User.findById(req.userId, "email username").exec()
       if(user.isActivated == false){
         return res.status(400).json({message:"Your account is not activated. Please check your email and activate it.", user:user, isAuthenticated:true, isActivated: false})
       }
@@ -66,7 +67,7 @@ exports.googleSignUp = async (req, res, next) => {
     })
   
       const newUser = await user.save();
-      const newToken = jwt.sign(newUser.toJSON(), process.env.TOKEN_SECRET, {  expiresIn: '5m' });
+      const newToken = jwt.sign({user_id: newUser._id}, process.env.TOKEN_SECRET, {  expiresIn: '59m' });
               
       return res.status(200).json({message: "User created successfuly", token : newToken, user:newUser, accountActivated: true});
   }
@@ -95,7 +96,7 @@ exports.googleLogin = async (req, res, next) => {
   console.log(oldUser);
   if(oldUser != null){
     console.log("Account exits already")
-    const newToken = jwt.sign(oldUser.toJSON(), process.env.TOKEN_SECRET, {  expiresIn: '5m' });
+    const newToken = jwt.sign({user_id: oldUser._id}, process.env.TOKEN_SECRET, {  expiresIn: '59m' });
             
     res.status(200).json({message: "Login Successful", token : newToken, user:oldUser, accountActivated: true});
   }
@@ -160,7 +161,7 @@ exports.localSignup = async (req, res, next) =>{
           return res.status(400).json({message:"Something went wrong", token: false})
         }
         console.log("Sent Successfully")
-        const newToken = await jwt.sign(newUser.toJSON(), process.env.TOKEN_SECRET, {  expiresIn: '5m' });
+        const newToken = await jwt.sign({user_id: newUser._id}, process.env.TOKEN_SECRET, {  expiresIn: '59m' });
         console.log(link);
         return res.status(200).json({message: "User created successfuly", token : newToken, user:newUser, accountActivated: true});
       },
@@ -202,7 +203,7 @@ exports.localLogin = async (req, res, next) =>{
      console.log("is password correct?:"+passwordCorrect)
      console.log(req.body.password)
      if(passwordCorrect){
-        const newToken = jwt.sign(ourUser.toJSON(), process.env.TOKEN_SECRET, {  expiresIn: '5m' });
+        const newToken = jwt.sign({user_id: ourUser._id}, process.env.TOKEN_SECRET, {  expiresIn: '59m' });
         return res.status(200).json({message: "Login successful", token : newToken, user:ourUser, isActivated: true});
      }
     return res.status(400).json({message:"Incorrect password!", token: false,isActivated:false})

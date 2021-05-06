@@ -8,4 +8,5 @@ router.get('/', verifyUser, function(req, res, next) {
   res.status(200).json({message:'This is the user id:'+req.userId});
 });
 
+
 module.exports = router;
