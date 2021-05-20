@@ -8,6 +8,7 @@ router.get('/', function(req, res, next) {
   res.send('This is the admin route');
 });
 
-router.get("/dashboard",jwtVerification.verifyUser, jwtVerification.verifyAdmin, adminController.getDashboard)
+router.get("/dashboard",jwtVerification.verifyUser, jwtVerification.verifyAdmin, adminController.getDashboard);
+router.get("/users", jwtVerification.verifyUser, jwtVerification.verifyAdmin, adminController.getAllUsers);
 
 module.exports = router;

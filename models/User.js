@@ -14,6 +14,7 @@ const userSchema = new Schema({
     picture: {type: String},
     googleId: {type: String, select: false},
     verificationSign: {type:String},
+    orders: [{type: Schema.Types.ObjectId, ref: "Order"}]
 })
 
 module.exports = mongoose.model("User", userSchema);
