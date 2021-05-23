@@ -10,5 +10,6 @@ router.get('/', function(req, res, next) {
 
 router.get("/dashboard",jwtVerification.verifyUser, jwtVerification.verifyAdmin, adminController.getDashboard);
 router.get("/users", jwtVerification.verifyUser, jwtVerification.verifyAdmin, adminController.getAllUsers);
+router.get("/users/:id", jwtVerification.verifyUser, jwtVerification.verifyAdmin, adminController.getSingleUser);
 
 module.exports = router;
