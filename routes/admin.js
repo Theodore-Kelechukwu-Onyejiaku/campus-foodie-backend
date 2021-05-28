@@ -11,5 +11,8 @@ router.get('/', function(req, res, next) {
 router.get("/dashboard",jwtVerification.verifyUser, jwtVerification.verifyAdmin, adminController.getDashboard);
 router.get("/users", jwtVerification.verifyUser, jwtVerification.verifyAdmin, adminController.getAllUsers);
 router.get("/users/:id", jwtVerification.verifyUser, jwtVerification.verifyAdmin, adminController.getSingleUser);
+router.get("/products/:id", jwtVerification.verifyUser, jwtVerification.verifyAdmin, adminController.getSingleProduct);
+
+router.put("/products/:id", jwtVerification.verifyUser, jwtVerification.verifyAdmin, adminController.updateSingleProduct)
 
 module.exports = router;

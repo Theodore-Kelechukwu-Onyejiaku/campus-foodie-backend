@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const User = require("../models/User");
 
 exports.verifyUser = (req, res, next)=>{
     // var token = req.body.token;
@@ -27,13 +28,11 @@ exports.verifyUser = (req, res, next)=>{
     }
 }
 
-exports.verifyAdmin = (req, res, next)=>{
-    // if(req.user.admin){
-    //   return  next()
-    // }
-    // console.log("You are not authorized!")
-    // var err = new Error("You are not authorized!");
-    // err.status = 403;
-    // res.render("signin", {error: err});
-    next()
+exports.verifyAdmin = async (req, res, next)=>{
+    const user =await  User.findById({_id: req.userId});
+    if(user.isAdmin){
+        next();
+    }else{
+        res.status(403).json({message: "You are not authorized!", status: "fail"})
+    }
 }
