@@ -15,4 +15,6 @@ router.get("/products/:id", jwtVerification.verifyUser, jwtVerification.verifyAd
 
 router.put("/products/:id", jwtVerification.verifyUser, jwtVerification.verifyAdmin, adminController.updateSingleProduct)
 
+router.delete("/products/:id", jwtVerification.verifyUser, jwtVerification.verifyAdmin, adminController.deleteSingleProduct)
+
 module.exports = router;
