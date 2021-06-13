@@ -16,7 +16,7 @@ sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 exports.verifyLogin = async (req, res, next)=>{
   console.log(req.userId)
     try {
-      let user = await User.findById(req.userId, "email username").exec()
+      let user = await User.findById(req.userId)
       if(user.isActivated == false){
         return res.status(400).json({message:"Your account is not activated. Please check your email and activate it.", user:user, isAuthenticated:true, isActivated: false})
       }

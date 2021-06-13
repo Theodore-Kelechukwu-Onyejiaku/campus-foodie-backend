@@ -14,4 +14,7 @@ router.get("/all-dishes", dishController.getDishes);
 // POST 
 router.post("/add-dish", dishController.addDish);
 
+// DELETE 
+router.delete("")
+
 module.exports = router;

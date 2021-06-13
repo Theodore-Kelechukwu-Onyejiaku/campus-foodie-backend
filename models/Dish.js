@@ -6,7 +6,8 @@ const Dish =  new Schema({
     description: {type: String},
     categories: [],
     price: {type: String},
-    dishUrl: {type: String}
+    dishUrl: {type: String},
+    imageId: {type:String}
 })
 
 module.exports = mongoose.model("Dish", Dish);

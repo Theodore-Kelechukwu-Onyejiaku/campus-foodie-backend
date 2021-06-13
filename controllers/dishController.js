@@ -4,7 +4,7 @@ const {cloudinary} = require("../utils/cloudinary")
 exports.getDishes = async (req, res, next)=>{
     const dishes = await Dish.find({})
     if(dishes === null){
-       res.status(400).json({"message": "null"});
+       res.status(400).json({"message": "null", "status":"fail"});
        return;
     }
 
@@ -14,7 +14,7 @@ exports.getDishes = async (req, res, next)=>{
 exports.addDish =  async (req, res, next)=>{
     try {
         const dish = new Dish({
-            name: req.body.dishName,
+            name: req.body.name,
             price: req.body.price,
             description: req.body.description,
         })
@@ -23,9 +23,11 @@ exports.addDish =  async (req, res, next)=>{
         dish.categories= dishCategories;
     
         const picture = req.body.dishPicture;
-        const uploadResponse = await cloudinary.uploader.upload(picture, {upload_preset: "campus-foodie"})
+        const uploadResponse = await cloudinary.v2.fileuploader.upload(picture, {upload_preset: "campus-foodie"})
+        console.log(uploadResponse);
     
         dish.dishUrl = uploadResponse.url;
+        dish.imageId = uploadResponse.public_id;
         
         const newDish = await dish.save();
         const hmm = await Dish.find({});

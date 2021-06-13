@@ -1,4 +1,5 @@
 const async = require("async");
+const {cloudinary} = require("../utils/cloudinary")
 
 const User = require("../models/User");
 const Dish = require("../models/Dish");
@@ -53,17 +54,18 @@ exports.updateSingleProduct = async (req, res, next)=>{
         if(dish === null) {
             return res.status(400).json({message: "No product found!", status:"fail"});
         }
-        console.log(req.body)
-        
-
+        console.log(req.body.categories)
         // var isSame = (req.body.categories.length == dish.categories.length) && req.body.categories.every(function(el, ind){
         //     return el === dish.categories[ind]
         // })
         // if(!isSame){
         //     return res.status(200).json({message: "dish updated successfully!"})
         // }
-        const dishCategories = req.body.categories.replace(/\s+/g, '').split(",");
-        dish.categories = dishCategories;
+        if(!req.body.categories.length){
+            const dishCategories = req.body.categories.replace(/\s+/g, '').split(",")
+        }else{
+            dish.categories = req.body.categories;
+        }
         try {
             const updatedDish = await dish.save();
             return res.status(200).json({message: "dish updated successfully!"})
@@ -74,9 +76,29 @@ exports.updateSingleProduct = async (req, res, next)=>{
 }
 
 exports.deleteSingleProduct = async (req, res, next) =>{
-    const product = await Dish.findByIdAndRemove(req.params.id);
-    if(!product){
-        return res.status(400).json({message: "No product found!", status:"fail"});
-    }
-    res.status(200).json({status:"ok", product:product});
+
+    try {
+        const deleteImage = await cloudinary.v2.uploader.destroy(req.body.Image_id, {upload_preset: "campus-foodie"})  
+        const product = await Dish.findByIdAndRemove(req.params.id);
+        if(!product){
+            return res.status(400).json({message: "No product found!", status:"fail"});
+        }      
+        res.status(200).json({status:"ok", product:product});
+
+    } catch (error) {
+        return res.status(400).json({status:"fail", message: "No product found!"});
+    }    
 }
+
+exports.getAllProducts = async(req, res, next)=>{
+    try {
+        const dishes = await Dish.find({})
+        if(dishes == null){
+            return res.status(400).json({status:"fail", message: "No product found!"});
+        }
+        res.status(200).json({status: "ok", products: dishes});
+    } catch (error) {
+        return res.status(400).json({status:"fail", message: "No product found!"});
+    }
+}
+
