@@ -2,6 +2,7 @@ const Dish = require("../models/Dish");
 const {cloudinary} = require("../utils/cloudinary")
 
 exports.getDishes = async (req, res, next)=>{
+    console.log("hmmmm")
     const dishes = await Dish.find({})
     if(dishes === null){
        res.status(400).json({"message": "null", "status":"fail"});

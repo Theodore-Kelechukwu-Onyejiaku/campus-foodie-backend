@@ -13,6 +13,7 @@ router.get("/users", jwtVerification.verifyUser, jwtVerification.verifyAdmin, ad
 router.get("/users/:id", jwtVerification.verifyUser, jwtVerification.verifyAdmin, adminController.getSingleUser);
 router.get("/products", jwtVerification.verifyUser, jwtVerification.verifyAdmin, adminController.getAllProducts);
 router.get("/products/:id", jwtVerification.verifyUser, jwtVerification.verifyAdmin, adminController.getSingleProduct);
+// router.get("/add-product",jwtVerification.verifyUser, jwtVerification.verifyAdmin, )
 
 router.put("/products/:id", jwtVerification.verifyUser, jwtVerification.verifyAdmin, adminController.updateSingleProduct)
 
