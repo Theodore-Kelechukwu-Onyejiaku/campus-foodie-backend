@@ -24,7 +24,7 @@ exports.addDish =  async (req, res, next)=>{
         dish.categories= dishCategories;
     
         const picture = req.body.dishPicture;
-        const uploadResponse = await cloudinary.v2.fileuploader.upload(picture, {upload_preset: "campus-foodie"})
+        const uploadResponse = await cloudinary.uploader.upload(picture, {upload_preset: "campus-foodie"})
         console.log(uploadResponse);
     
         dish.dishUrl = uploadResponse.url;

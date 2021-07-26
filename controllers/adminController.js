@@ -39,6 +39,7 @@ exports.getSingleProduct = async (req, res, next) =>{
     if(!product){
         return res.status(400).json({message: "No product found!", status:"fail"});
     }
+    console.log(product.categories)
     res.status(200).json({status:"ok", product:product});
 }
 
@@ -55,22 +56,19 @@ exports.updateSingleProduct = async (req, res, next)=>{
             return res.status(400).json({message: "No product found!", status:"fail"});
         }
         console.log(req.body.categories)
-        // var isSame = (req.body.categories.length == dish.categories.length) && req.body.categories.every(function(el, ind){
-        //     return el === dish.categories[ind]
-        // })
-        // if(!isSame){
-        //     return res.status(200).json({message: "dish updated successfully!"})
-        // }
-        if(!req.body.categories.length){
+        
+        if(req.body.categories.length <= 0){
             const dishCategories = req.body.categories.replace(/\s+/g, '').split(",")
         }else{
             dish.categories = req.body.categories;
         }
         try {
             const updatedDish = await dish.save();
-            return res.status(200).json({message: "dish updated successfully!"})
+            console.log(updatedDish);
+            return res.status(200).json({message: "dish updated successfully!", status:"ok"})
         } catch (error) {
-           return res.status(400).json({message: err, status: "fail"});
+            console.log(error.message)
+           return res.status(400).json({message: error.message, status: "fail"});
         }
     })
 }
@@ -78,15 +76,30 @@ exports.updateSingleProduct = async (req, res, next)=>{
 exports.deleteSingleProduct = async (req, res, next) =>{
 
     try {
-        const deleteImage = await cloudinary.v2.uploader.destroy(req.body.Image_id, {upload_preset: "campus-foodie"})  
-        const product = await Dish.findByIdAndRemove(req.params.id);
+        let product = await Dish.findById(req.params.id);
         if(!product){
             return res.status(400).json({message: "No product found!", status:"fail"});
-        }      
-        res.status(200).json({status:"ok", product:product});
+        }
+        cloudinary.uploader.destroy(product.imageId, function(error,result) {
+            if(error){
+                // console.log("Error is :"+JSON.stringify(error))
+                return res.status(400).json({message: error, status:"fail"});
+            }
+            // console.log("result is :"+JSON.stringify(result))
+            var delprroduct = Dish.findByIdAndDelete(req.params.id, (error, result)=>{
+                if(error){
+                    console.log(error)
+                    return res.status(400).json({message: error, status:"fail"});
+                }
+                res.status(200).json({status:"ok", product:product, message:"Product deleted successfully!"});
+
+            });
+            
+        });
 
     } catch (error) {
-        return res.status(400).json({status:"fail", message: "No product found!"});
+        console.log(error)
+        return res.status(400).json({status:"fail", message: error});
     }    
 }
 
@@ -101,4 +114,3 @@ exports.getAllProducts = async(req, res, next)=>{
         return res.status(400).json({status:"fail", message: "No product found!"});
     }
 }
-

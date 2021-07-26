@@ -56,7 +56,7 @@ exports.googleSignUp = async (req, res, next) => {
     const verificationString = await makeString(10); 
 
     const user = new User({
-      username: name,
+      fullname: name,
       given_name: given_name,
       family_name: family_name,
       provider:"google",
@@ -123,9 +123,11 @@ exports.localSignup = async (req, res, next) =>{
     const hashPassword = await bcrypt.hash(req.body.password, salt);
     const verificationString = await makeString(10); 
 
+    console.log(req.body.fullname)
 
     let user = new User({
       email: req.body.email,
+      fullname: req.body.fullname,
       password: hashPassword,
       provider: "local",
       isActivated: false,
@@ -137,6 +139,7 @@ exports.localSignup = async (req, res, next) =>{
     const link = `${protocol}://${host}/api/auth/activate/${user.verificationSign}/${user._id}`
     const emailContent = "Please click the link below to verify your account";
     
+    console.log("The user email is: "+user.email)
     const msg = {
       to: user.email,
       from: "theodore.onyejiaku.g20@gmail.com", // Use the email address or domain you verified above
@@ -156,6 +159,7 @@ exports.localSignup = async (req, res, next) =>{
     };
     sgMail.send(msg).then(
       async (resp) => {
+        console.log("response from sendgrid is:"+ resp);
         const newUser = await user.save();
         if(!newUser){
           return res.status(400).json({message:"Something went wrong", token: false})
