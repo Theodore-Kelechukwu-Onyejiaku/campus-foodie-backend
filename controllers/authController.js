@@ -8,7 +8,7 @@ const jwtAuth = require("../auth/jwtVerification");
 require("dotenv").config();
 
 const {makeString} = require("../helpers/randStringGen");
-const sgMail = require("@sendgrid/mail");
+let sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 
 
@@ -238,4 +238,124 @@ exports.activateAccount =async (req, res, next) =>{
     await user.save();
   }
   return res.render("email-activation", {message: "Account activation successful!"})
+}
+
+
+// RESET PASSWORD
+exports.getPasswordResetCode = async (req, res, next) =>{
+  const user = await User.findOne({email: req.params.email}).exec();
+
+  if(!user){
+    return res.status(403).json({status: "fail", message: "email not found!"});
+  }
+  if(user.provider === "local"){
+    const tokenExpiration = Date.now() + 1800000; // 30 mins expiration
+    const resetCode = await makeString(30);
+    const protocol = req.protocol;
+    const host = req.get("host");
+    const link = `${protocol}://${host}/api/auth/password-reset/${resetCode}/${user._id}`
+    const emailContent = "Please click the button below to reset your password";
+    
+    console.log("The user email is: "+user.email)
+    const msg = {
+      to: user.email,
+      from: "theodore.onyejiaku.g20@gmail.com", // Use the email address or domain you verified above
+      subject: "Password Recovery",
+      text: "Password Recovery Link",
+      html: `<body>
+                <h1  style='font-family:Tangerine, cursive'>Welcome to Campus Foodie</h1>
+                
+                <div style='background-color:blue;padding:'>
+                    <p>${emailContent}</p>
+                    <a href="${link}"><button style="background-color:#ee6e73;border:none;outline:none;color:white;padding:2%;cursor:pointer">Reset Password</button></div>
+                </div>
+                <footer></footer>
+            </body>
+            `
+    };
+    sgMail.send(msg).then(
+      async (resp) => {
+        user.passwordResetCode = resetCode;
+        user.passwordTokenExpiration = tokenExpiration;
+        const newUser = await user.save();
+        if(!newUser){
+          return res.status(400).json({message:"Something went wrong", token: false})
+        }
+        console.log("Sent Successfully")
+        console.log(link);
+        return res.status(200).json({message: "Password Sent Successfully", status:"ok"});
+      },
+      (error) => {
+        console.error(error);
+          
+        return res.status(400).json({message:"Something went wrong", status:"fail"})
+      }
+    );
+    
+
+  }else{
+    res.status(400).json({status:"fail", message: `Please login with your ${user.provider} account`})
+  }
+}
+
+
+exports.getPasswordUser = async (req, res, next) =>{
+  try {
+    const user = await User.findById(req.params.userId).exec();
+    if(!user){
+      res.render("passwordReset",{status:"fail", error: `User not found!`})
+    }
+  
+    if(user.passwordResetCode === req.params.resetCode){
+      if(user.passwordTokenExpiration === ""){
+        res.render("passwordReset",{status: "fail", error: "link has expired or has been used"})
+      }
+      
+      if(Date.now() - Number(user.passwordTokenExpiration) > 300000){ //If it is greater than the expiration time
+        res.render("passwordReset",{status: "fail", error: "link has expired!"})
+      }else{
+        res.render("passwordReset",{status: "ok", message:"User found", user: user});
+      }
+  
+    }else{
+      res.render("passwordReset",{status: "fail", error: "Invalid password recovery link!"})
+    }  
+  } catch (error) {
+    console.log(error.message);
+    res.render("passwordReset",{status: "fail", error: "Something went wrong"});
+  }
+}
+
+exports.changePassword = async (req, res, next) =>{
+  try {
+    console.log(req.body)
+    const user = await User.findById(req.body.userId).exec();
+    console.log(user);
+    
+
+    if(!user){
+      res.status(404).json({status: "fail", message: "No user found!"})
+      return;
+    }
+    const isResetCodeValid = user.passwordResetCode == req.body.resetCode;
+
+
+    if(!isResetCodeValid){
+      res.status(404).json({status: "fail", message: "Something went wrong"})
+      return;
+    
+    }
+  
+    let salt = await bcrypt.genSalt(10);
+    const hashPassword = await bcrypt.hash(req.body.password, salt);
+  
+    user.password = hashPassword;
+    user.passwordResetCode = ""
+  
+    const modifiedUser = await user.save();
+    res.status(200).json({status: "ok", message:"Password reset successful!"}); 
+  } catch (error) {
+    console.log(error.message)
+    res.status(404).json({status: "fail", message: "Something went wrong!"})
+  }
 }

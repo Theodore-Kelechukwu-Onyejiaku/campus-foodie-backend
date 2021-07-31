@@ -14,7 +14,9 @@ const userSchema = new Schema({
     picture: {type: String},
     googleId: {type: String, select: false},
     verificationSign: {type:String},
-    orders: [{type: Schema.Types.ObjectId, ref: "Order"}]
+    orders: [{type: Schema.Types.ObjectId, ref: "Order"}],
+    passwordResetCode: {type:String},
+    passwordTokenExpiration: {type: String}
 })
 
 module.exports = mongoose.model("User", userSchema);
