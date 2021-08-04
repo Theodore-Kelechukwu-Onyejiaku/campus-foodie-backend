@@ -1,6 +1,6 @@
 const Order = require("../models/Order");
 
-exports.orderPost = async (req,res, next)=>{
+exports.makeOrder = async (req,res, next)=>{
     console.log(req.body);
     const reqBody = req.body;
     if(reqBody === null){
@@ -9,7 +9,7 @@ exports.orderPost = async (req,res, next)=>{
 
     const newOrder = new Order({
         customer : req.body.userId,
-        amount: req.body,
+        amount: req.body.amount,
         destination: req.body.destination,
         customerLocation : req.body.latLong,
     })
@@ -23,7 +23,7 @@ exports.orderPost = async (req,res, next)=>{
     try {
          await newOrder.save();
          res.status(200).json({status: "ok", message:"Order was successfully placced!", order: newOrder})
-    } catch (errror) {
+    } catch (error) {
         res.status(404).json({status: "fail", message:error.message, order: null})
     }
 }
@@ -41,7 +41,21 @@ exports.getOrders = async (req, res, next) =>{
     }
 }
 
-exports.cancelOrder = (req, res, next) =>{
+
+exports.getUserOrders = async (req, res, next)=>{
+    try {
+        const orders = await Order.find({customer: req.params.userId}).exec();
+        console.log(req.params.userId)
+        console.log(orders);
+        res.status(200).json({status: "ok", orders});
+
+    } catch (error) {
+        console.log(error.message)
+        res.status(400).json({status: "fail", orders: null, message: error.message})
+    }
+}
+
+exports.cancelOrder = async(req, res, next) =>{
     try {
         const order = await Order.findById(req.body.orderId).exec()
 
@@ -79,7 +93,7 @@ exports.customerConfirmation = async (req, res, next) =>{
     }
 }
 
-exports.deliveryAgentConfirmation = ()=>{
+exports.deliveryAgentConfirmation = async()=>{
     try {
         const user = await User.findById(req.body.userId);
 

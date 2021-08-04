@@ -13,6 +13,7 @@ var adminRouter = require("./routes/admin");
 var orderRouter = require("./routes/order");
 var dishRouter = require("./routes/dish");
 var authRouter = require("./routes/auth");
+var paymentRouter = require("./routes/payment");
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.use('/api/user', userRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/dish", dishRouter);
+app.use("/api/payment", paymentRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

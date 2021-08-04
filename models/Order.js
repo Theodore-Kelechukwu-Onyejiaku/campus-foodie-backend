@@ -11,7 +11,7 @@ const Order = new Schema({
     customer : {type: Schema.Types.ObjectId, ref: "User"},
     deliveryAgent: {type: Schema.Types.ObjectId, ref: "User"},
     deliveryStatus : {type: String, enum: ["pending","delivered", "canceled"], default: "pending"},
-    amount: {type: Number},
+    amount: {type: String},
     products: [item],
     destination: {type: String},
     customerConfirmation: {type: Boolean},

@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
+const orderController = require("../controllers/orderController");
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('This is the order route');
-});
+router.post('/', orderController.makeOrder);
+router.get("/user-orders/:userId", orderController.getUserOrders)
 
 module.exports = router;

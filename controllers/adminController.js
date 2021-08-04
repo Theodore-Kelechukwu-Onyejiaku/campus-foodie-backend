@@ -22,7 +22,9 @@ exports.getDashboard = (req, res, next)=>{
 }
 
 exports.getAllUsers = async (req, res, next) =>{
-    const users = await User.find({isAdmin: false}).exec();
+    // const users = await User.find({isAdmin: false}).exec(); 
+    const users = await User.find().exec();
+
     res.status(200).json({users: users})
 }
 
