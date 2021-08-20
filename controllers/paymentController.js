@@ -26,3 +26,18 @@ exports.makePayment = async (req, res, next) =>{
         res.status(400).json({status: "ok", message: error.message})            
     }
 }
+
+exports.getPayments = async (req, res, next)=>{
+    console.log("na wa oooooo")
+    console.log(req.params.userId)
+    try {
+        const payments = await Payment.find({customer: req.params.userId}).exec();
+
+        console.log(payments);
+        res.status(200).json({status: "ok", payments: payments});
+        
+    } catch (error) {
+        console.log(error.message)
+        res.status(400).json({status: "fail", payments: null, message: error.message})
+    }
+}

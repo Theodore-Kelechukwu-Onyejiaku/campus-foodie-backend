@@ -256,7 +256,6 @@ exports.getPasswordResetCode = async (req, res, next) =>{
     const link = `${protocol}://${host}/api/auth/password-reset/${resetCode}/${user._id}`
     const emailContent = "Please click the button below to reset your password";
     
-    console.log("The user email is: "+user.email)
     const msg = {
       to: user.email,
       from: "theodore.onyejiaku.g20@gmail.com", // Use the email address or domain you verified above

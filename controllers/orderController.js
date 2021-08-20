@@ -22,6 +22,11 @@ exports.makeOrder = async (req,res, next)=>{
 
     try {
          await newOrder.save();
+         const user = User.findById({id: req.body.userId}).exec();
+         if(user ===null){
+            res.status(400).json({status: "fail", message:"No user found error"})
+         }
+         user.orders.push(newOrder._id)
          res.status(200).json({status: "ok", message:"Order was successfully placced!", order: newOrder})
     } catch (error) {
         res.status(404).json({status: "fail", message:error.message, order: null})
@@ -44,6 +49,8 @@ exports.getOrders = async (req, res, next) =>{
 
 exports.getUserOrders = async (req, res, next)=>{
     try {
+        console.log(req.params)
+        
         const orders = await Order.find({customer: req.params.userId}).exec();
         console.log(req.params.userId)
         console.log(orders);

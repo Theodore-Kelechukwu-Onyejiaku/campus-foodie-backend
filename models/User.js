@@ -15,6 +15,7 @@ const userSchema = new Schema({
     googleId: {type: String, select: false},
     verificationSign: {type:String},
     orders: [{type: Schema.Types.ObjectId, ref: "Order"}],
+    payments: [{type: Schema.Types.ObjectId, ref: "Payment"}],
     passwordResetCode: {type:String},
     passwordTokenExpiration: {type: String}
 })

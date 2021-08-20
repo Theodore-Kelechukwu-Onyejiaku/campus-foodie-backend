@@ -16,7 +16,8 @@ const Order = new Schema({
     destination: {type: String},
     customerConfirmation: {type: Boolean},
     deliveryAgentConfirmation: {type: Boolean},
-    done: {type: Boolean, default: false}
+    done: {type: Boolean, default: false},
+    orders: [{type:Schema.Types.ObjectId, ref:"Order"}]
 }, 
 {
     timestamps: true
